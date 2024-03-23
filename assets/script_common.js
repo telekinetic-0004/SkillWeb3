@@ -37,9 +37,12 @@ async function authenticateWithLinkedIn() {
     url.searchParams.set('response_type', 'code');
     url.searchParams.set('client_id', process.env.LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
     url.searchParams.set('redirect_uri', process.env.LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
-    url.searchParams.set('state', 'SECURE_RANDOM_STRING'); // Generate a random state string
+    url.searchParams.set('state', crypto.randomUUID()); // Generate a random state string
     url.searchParams.set('scope', 'r_liteprofile%20r_emailaddress%20w_member_social'); // Requested permissions
     }catch(error){console.error('Error fetching config: ',error)}
+    // Ensure button is enabled before redirecting
+  const linkedinBtn = document.getElementById('linkedinBtn');
+  linkedinBtn.disabled = false;
 
     window.location.href = url.toString(); // Redirect to LinkedIn authorization page
 }

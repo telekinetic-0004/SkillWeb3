@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'nonce-<your-nonce-value>'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Individual Registration</title>
 </head>
@@ -12,18 +12,22 @@
     <button id="linkedInBtn" disabled>Login with LinkedIn</button>
 
     <script src="../assets/script_common.js"></script>
-    <script>
+    <script nonce="<your-nonce-value>">
         function createCSPDirective() {
-            const nonce = btoa(crypto.getRandomValues(new Uint32Array(1)));
+          const nonce = btoa(crypto.getRandomValues(new Uint32Array(16))).substring(0, 16);
 
-            const metaElement = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
-            if (metaElement) {
-                metaElement.setAttribute('content', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'; font-src 'self' https://fonts.gstatic.com;`);
+          const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+          if (cspMeta) {
+            const cspText = cspMeta.getAttribute('content');
+            const newCspText = cspText.replace(/nonce-\w+/, `nonce-${nonce}`);
+            cspMeta.setAttribute('content', newCspText);
 
-                // Add the nonce value to the script and style tags
-                const scripts = document.querySelectorAll('script, style');
-                scripts.forEach(script => script.setAttribute('nonce', nonce));
+            // Set the nonce attribute of the inline script
+            const inlineScript = document.querySelector('script[nonce]');
+            if (inlineScript) {
+              inlineScript.setAttribute('nonce', nonce);
             }
+          }
         }
 
         // Call the function after the DOM is ready

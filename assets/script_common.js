@@ -23,19 +23,27 @@ async function connectWallet() {
 async function authenticateWithLinkedIn() {
     const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';
     const state = crypto.randomUUID(); // Generate a random state string
-
+  
     try {
-        const response = await fetch(vercelFunctionUrl + `?state=${state}`);
-        if (response.ok) {
-            const { redirectUrl } = await response.json();
-            window.location.href = redirectUrl; // Redirect to LinkedIn authorization page
+      const response = await fetch(vercelFunctionUrl + `?state=${state}`);
+  
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.redirectUrl) {
+          window.location.href = data.redirectUrl; // Redirect to LinkedIn authorization page
         } else {
-            console.error('Failed to fetch redirect URL');
+          console.error('Invalid response format from server');
         }
+      } else {
+        console.error('Failed to fetch redirect URL:', response.statusText);
+        // Handle non-successful responses (e.g., display user-friendly error message)
+      }
     } catch (error) {
-        console.error('Error fetching redirect URL: ', error);
+      console.error('Error fetching redirect URL:', error);
+      // Handle network errors or other fetch-related issues
     }
-}
+  }
+  
 
 
 // Function to make payment using MetaMask

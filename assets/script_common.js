@@ -32,6 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
+
+    // Add a click event listener to the LinkedIn button
+    const linkedInBtn = document.getElementById('linkedInBtn');
+    if (linkedInBtn) {
+        linkedInBtn.addEventListener('click', authenticateWithLinkedIn);
+    } else {
+        console.error("Button with id 'linkedInBtn' not found in the DOM.");
+    }
 });
 
 async function authenticateWithLinkedIn() {
@@ -57,6 +65,7 @@ async function authenticateWithLinkedIn() {
         alert('An error occurred while fetching the redirect URL.');
     }
 }
+
 
 
 

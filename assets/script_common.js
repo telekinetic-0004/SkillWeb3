@@ -1,34 +1,32 @@
 // script_common.js
 // Function to enable LinkedIn button after successful MetaMask connection
-document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
-document.getElementById('linkedInBtn').addEventListener('click', authenticateWithLinkedIn);
+// Function to enable LinkedIn button after successful MetaMask connection
 async function connectWallet() {
     try {
-      if (typeof window.ethereum === 'undefined') {
-        throw new Error('MetaMask is not installed or not detected');
-      }
-  
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const userAddress = accounts[0];
-      console.log("The connected user is:", userAddress);
-  
-      const linkedInButton = document.getElementById('linkedinBtn');
-      if (linkedInButton) {
-        // Remove the disabled attribute if the element is found
-        linkedInButton.removeAttribute('disabled');
-      } else {
-        // Log an error message if the element is not found
-        console.error('Element with the ID "linkedinBtn" not found in the DOM.');
-      }
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === 'undefined') {
+            throw new Error('MetaMask is not installed or not detected');
+        }
+
+        // Request account access from MetaMask
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const userAddress = accounts[0];
+        console.log("The connected user is:", userAddress);
+
+        // Enable LinkedIn button upon successful connection
+        document.getElementById('linkedInBtn').removeAttribute('disabled');
     } catch (error) {
-      console.error('Error connecting wallet:', error);
-      if (error.code === 4001) {
-        alert('Connect request rejected by user. Please approve the request to continue.');
-      } else {
-        alert('An error occurred while connecting to MetaMask: ' + error.message);
-      }
+        console.error('Error connecting wallet:', error);
+        if (error.code === 4001) {
+            alert('Connect request rejected by user. Please approve the request to continue.');
+        } else {
+            alert('An error occurred while connecting to MetaMask: ' + error.message);
+        }
     }
-  }
+}
+
+// Add a click event listener to the connect wallet button
+document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
 
 async function authenticateWithLinkedIn() {
     const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';

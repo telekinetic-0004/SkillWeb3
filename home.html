@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-    <div>
-        <h1>Go to home</h1>
-        <button href="authentication/register_type.html">Click here</button>
-    </div>
     <div class="container">
         <h1>Welcome to the Researcher Collaboration Platform</h1>
         <p>Please select an option:</p>
@@ -21,5 +17,29 @@
         </ul>
     </div>
     <script src="assets/script_common.js"></script>
+    <script>
+        // Function to parse URL parameters
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Get access token and state from URL parameters
+        const accessToken = getParameterByName('access_token');
+        const state = getParameterByName('state');
+
+        // Perform actions based on access token and state
+        if (accessToken && state) {
+            // Handle the authentication success
+            console.log('Access Token:', accessToken);
+            console.log('State:', state);
+            // Perform any additional actions here, such as storing the access token or redirecting the user
+        }
+    </script>
 </body>
 </html>

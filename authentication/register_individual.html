@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://skill-web3.vercel.app; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Individual Registration</title>
 </head>
@@ -12,5 +11,22 @@
     <button id="linkedInBtn" disabled>Login with LinkedIn</button>
 
     <script src="../assets/script_common.js"></script>
+    <script>
+        function createCSPDirective() {
+            const nonce = btoa(crypto.getRandomValues(new Uint32Array(1)));
+
+            const metaElement = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+            if (metaElement) {
+                metaElement.setAttribute('content', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'; font-src 'self' https://fonts.gstatic.com;`);
+
+                // Add the nonce value to the script and style tags
+                const scripts = document.querySelectorAll('script, style');
+                scripts.forEach(script => script.setAttribute('nonce', nonce));
+            }
+        }
+
+        // Call the function after the DOM is ready
+        document.addEventListener('DOMContentLoaded', createCSPDirective);
+    </script>
 </body>
 </html>

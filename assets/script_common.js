@@ -4,19 +4,23 @@ async function connectWallet() {
     try {
         // Check if MetaMask is installed
         if (typeof window.ethereum === 'undefined') {
-            throw new Error('MetaMask is not installed');
+            throw new Error('MetaMask is not installed or not detected');
         }
 
         // Request account access from MetaMask
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const userAddress = accounts[0]; // Get user's Ethereum address
-        console.log("The connected user is: ",userAddress);
+        console.log("The connected user is:", userAddress);
 
         // Enable LinkedIn button upon successful connection
         document.getElementById('linkedinBtn').removeAttribute('disabled');
     } catch (error) {
         console.error('Error connecting wallet:', error);
-        alert('An error occurred while connecting to MetaMask.');
+        if (error.code === 4001) {
+            alert('Connect request rejected by user. Please approve the request to continue.');
+        } else {
+            alert('An error occurred while connecting to MetaMask: ' + error.message);
+        }
     }
 }
 
@@ -25,25 +29,25 @@ async function authenticateWithLinkedIn() {
     const state = crypto.randomUUID(); // Generate a random state string
   
     try {
-      const response = await fetch(vercelFunctionUrl + `?state=${state}`);
-  
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.redirectUrl) {
-          window.location.href = data.redirectUrl; // Redirect to LinkedIn authorization page
-        } else {
-          console.error('Invalid response format from server');
+        const response = await fetch(`${vercelFunctionUrl}?state=${state}`);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch redirect URL: ${response.statusText}`);
         }
-      } else {
-        console.error('Failed to fetch redirect URL:', response.statusText);
-        // Handle non-successful responses (e.g., display user-friendly error message)
-      }
+
+        const data = await response.json();
+        if (!data || !data.redirectUrl) {
+            throw new Error('Invalid response format from server');
+        }
+
+        // Redirect to LinkedIn authorization page
+        window.location.href = data.redirectUrl;
     } catch (error) {
-      console.error('Error fetching redirect URL:', error);
-      // Handle network errors or other fetch-related issues
+        console.error('Error fetching redirect URL:', error);
+        alert('An error occurred while fetching the redirect URL.');
     }
-  }
-  
+}
+
 
 
 // Function to make payment using MetaMask

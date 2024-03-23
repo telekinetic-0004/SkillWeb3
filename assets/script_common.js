@@ -20,16 +20,28 @@ async function connectWallet() {
     }
 }
 
+async function loadConfig() {
+    const response = await fetch('config.json');
+    if (!response.ok) {
+      throw new Error(`Error fetching config: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  }
+
 async function authenticateWithLinkedIn() {
     // Replace with your Vercel function URL (e.g., https://your-vercel-project.vercel.app/api/linkedinAuth)
     const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';
     const url = new URL('https://www.linkedin.com/oauth/v2/authorization');
+    try{
+        const config=await loadConfig();
 
     url.searchParams.set('response_type', 'code');
-    url.searchParams.set('client_id', LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
-    url.searchParams.set('redirect_uri', LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
-    url.searchParams.set('state', 'RANDOM_STRING'); // Generate a random state string
+    url.searchParams.set('client_id', config.LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
+    url.searchParams.set('redirect_uri', config.LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
+    url.searchParams.set('state', 'SECURE_RANDOM_STRING'); // Generate a random state string
     url.searchParams.set('scope', 'r_liteprofile%20r_emailaddress%20w_member_social'); // Requested permissions
+    }catch(error){console.error('Error fetching config: ',error);}
 
     window.location.href = url.toString(); // Redirect to LinkedIn authorization page
 }

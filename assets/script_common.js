@@ -23,7 +23,7 @@ async function connectWallet() {
 // Function to authenticate with LinkedIn
 function authenticateWithLinkedIn() {
     // Redirect to LinkedIn authentication page
-    window.location.href = 'https://skill-web3.vercel.app/api/linkedinAuth';
+    window.location.href = 'https://skill-web3.vercel.app/api/linkedinAuth.js';
 }
 
 // Function to make payment using MetaMask

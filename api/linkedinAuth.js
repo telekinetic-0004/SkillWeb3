@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 
             // Redirect the user back to your frontend with the access token
             res.writeHead(302, {
-                Location: `https://skill-web3.vercel.app/index.html?access_token=${access_token}&state=${state}`
+                Location: `https://skill-web3.vercel.app/home.html?access_token=${access_token}&state=${state}`
             });
             res.end();
         } catch (error) {

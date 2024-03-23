@@ -20,6 +20,19 @@ async function connectWallet() {
     }
 }
 
+async function authenticateWithLinkedIn() {
+    // Replace with your Vercel function URL (e.g., https://your-vercel-project.vercel.app/api/linkedinAuth)
+    const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';
+    const url = new URL('https://www.linkedin.com/oauth/v2/authorization');
+
+    url.searchParams.set('response_type', 'code');
+    url.searchParams.set('client_id', process.env.LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
+    url.searchParams.set('redirect_uri', process.env.LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
+    url.searchParams.set('state', 'RANDOM_STRING'); // Generate a random state string
+    url.searchParams.set('scope', 'r_liteprofile%20r_emailaddress%20w_member_social'); // Requested permissions
+
+    window.location.href = url.toString(); // Redirect to LinkedIn authorization page
+}
 
 // Function to make payment using MetaMask
 async function makePayment() {

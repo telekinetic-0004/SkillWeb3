@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'nonce-<your-nonce-value>'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'nonce-<your-nonce-value>'; connect-src 'self' https://skill-web3.vercel.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Individual Registration</title>
 </head>
@@ -18,15 +18,16 @@
 
           const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
           if (cspMeta) {
-            const cspText = cspMeta.getAttribute('content');
-            const newCspText = cspText.replace(/nonce-\w+/, `nonce-${nonce}`);
-            cspMeta.setAttribute('content', newCspText);
+            let cspText = cspMeta.getAttribute('content');
+            cspText = cspText.replace(/nonce-\w+/, `nonce-${nonce}`);
+            cspMeta.setAttribute('content', cspText);
 
             // Set the nonce attribute of the inline script
-            const inlineScript = document.querySelector('script[nonce]');
-            if (inlineScript) {
-              inlineScript.setAttribute('nonce', nonce);
-            }
+            const inlineScripts = document.querySelectorAll('script[nonce]');
+            inlineScripts.forEach(script => script.setAttribute('nonce', nonce));
+
+            // Set the nonce attribute of the createCSPDirective function
+            (this.constructor.name === 'HTMLScriptElement' ? this: createCSPDirective).setAttribute('nonce', nonce);
           }
         }
 

@@ -9,8 +9,12 @@
 </head>
 <body>
     <h1>Individual Registration</h1>
-    <button onclick="connectWallet()">Connect Wallet</button>
-    <button onclick="authenticateWithLinkedIn()" disabled id="linkedinBtn">Login with LinkedIn</button>
+    <button id="connectWalletBtn">Connect Wallet</button>
+<button id="linkedInBtn" disabled>Login with LinkedIn</button>
+<script>
+  document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+  document.getElementById('linkedInBtn').addEventListener('click', authenticateWithLinkedIn);
+</script>
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 </body>
 </html>

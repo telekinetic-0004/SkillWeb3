@@ -2,27 +2,31 @@
 // Function to enable LinkedIn button after successful MetaMask connection
 async function connectWallet() {
     try {
-        // Check if MetaMask is installed
-        if (typeof window.ethereum === 'undefined') {
-            throw new Error('MetaMask is not installed or not detected');
-        }
-
-        // Request account access from MetaMask
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const userAddress = accounts[0]; // Get user's Ethereum address
-        console.log("The connected user is:", userAddress);
-
-        // Enable LinkedIn button upon successful connection
-        document.getElementById('linkedinBtn').removeAttribute('disabled');
+      if (typeof window.ethereum === 'undefined') {
+        throw new Error('MetaMask is not installed or not detected');
+      }
+  
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const userAddress = accounts[0];
+      console.log("The connected user is:", userAddress);
+  
+      const linkedInButton = document.getElementById('linkedinBtn');
+      if (linkedInButton) {
+        // Remove the disabled attribute if the element is found
+        linkedInButton.removeAttribute('disabled');
+      } else {
+        // Log an error message if the element is not found
+        console.error('Element with the ID "linkedinBtn" not found in the DOM.');
+      }
     } catch (error) {
-        console.error('Error connecting wallet:', error);
-        if (error.code === 4001) {
-            alert('Connect request rejected by user. Please approve the request to continue.');
-        } else {
-            alert('An error occurred while connecting to MetaMask: ' + error.message);
-        }
+      console.error('Error connecting wallet:', error);
+      if (error.code === 4001) {
+        alert('Connect request rejected by user. Please approve the request to continue.');
+      } else {
+        alert('An error occurred while connecting to MetaMask: ' + error.message);
+      }
     }
-}
+  }
 
 async function authenticateWithLinkedIn() {
     const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';

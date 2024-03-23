@@ -20,32 +20,23 @@ async function connectWallet() {
     }
 }
 
-async function loadConfig() {
-    const response = await fetch('config.json');
-    if (!response.ok) {
-      throw new Error(`Error fetching config: ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data;
-  }
-
 async function authenticateWithLinkedIn() {
-    // Replace with your Vercel function URL (e.g., https://your-vercel-project.vercel.app/api/linkedinAuth)
     const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';
-    const url = new URL('https://www.linkedin.com/oauth/v2/authorization');
-    try{
-    url.searchParams.set('response_type', 'code');
-    url.searchParams.set('client_id', process.env.LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
-    url.searchParams.set('redirect_uri', process.env.LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
-    url.searchParams.set('state', crypto.randomUUID()); // Generate a random state string
-    url.searchParams.set('scope', 'r_liteprofile%20r_emailaddress%20w_member_social'); // Requested permissions
-    }catch(error){console.error('Error fetching config: ',error)}
-    // Ensure button is enabled before redirecting
-  const linkedinBtn = document.getElementById('linkedinBtn');
-  linkedinBtn.disabled = false;
+    const state = crypto.randomUUID(); // Generate a random state string
 
-    window.location.href = url.toString(); // Redirect to LinkedIn authorization page
+    try {
+        const response = await fetch(vercelFunctionUrl + `?state=${state}`);
+        if (response.ok) {
+            const { redirectUrl } = await response.json();
+            window.location.href = redirectUrl; // Redirect to LinkedIn authorization page
+        } else {
+            console.error('Failed to fetch redirect URL');
+        }
+    } catch (error) {
+        console.error('Error fetching redirect URL: ', error);
+    }
 }
+
 
 // Function to make payment using MetaMask
 async function makePayment() {

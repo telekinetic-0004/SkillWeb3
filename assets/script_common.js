@@ -26,8 +26,8 @@ async function authenticateWithLinkedIn() {
     const url = new URL('https://www.linkedin.com/oauth/v2/authorization');
 
     url.searchParams.set('response_type', 'code');
-    url.searchParams.set('client_id', process.env.LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
-    url.searchParams.set('redirect_uri', process.env.LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
+    url.searchParams.set('client_id', LINKEDIN_CLIENT_ID); // Replace with your client ID (environment variable)
+    url.searchParams.set('redirect_uri', LINKEDIN_REDIRECT_URI); // Replace with your redirect URI (environment variable)
     url.searchParams.set('state', 'RANDOM_STRING'); // Generate a random state string
     url.searchParams.set('scope', 'r_liteprofile%20r_emailaddress%20w_member_social'); // Requested permissions
 

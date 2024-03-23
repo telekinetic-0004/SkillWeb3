@@ -1,5 +1,5 @@
 node_modules/
 authentication/config.json
 logs/
-process.env
-structure.md
+.process.env
+.structure.md

@@ -1,5 +1,7 @@
 // script_common.js
 // Function to enable LinkedIn button after successful MetaMask connection
+document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+document.getElementById('linkedInBtn').addEventListener('click', authenticateWithLinkedIn);
 async function connectWallet() {
     try {
       if (typeof window.ethereum === 'undefined') {

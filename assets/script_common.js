@@ -1,4 +1,3 @@
-// script_common.js
 document.addEventListener('DOMContentLoaded', function() {
     // Function to enable LinkedIn button after successful MetaMask connection
     async function connectWallet() {
@@ -14,7 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("The connected user is:", userAddress);
 
             // Enable LinkedIn button upon successful connection
-            document.getElementById('linkedInBtn').removeAttribute('disabled');
+            // Remove any existing 'disabled' attribute
+            const connectWalletBtn = document.getElementById('connectWalletBtn');
+            connectWalletBtn.removeAttribute('disabled');
         } catch (error) {
             console.error('Error connecting wallet:', error);
             if (error.code === 4001) {
@@ -32,39 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
-
-    // Add a click event listener to the LinkedIn button
-    const linkedInBtn = document.getElementById('linkedInBtn');
-    if (linkedInBtn) {
-        linkedInBtn.addEventListener('click', authenticateWithLinkedIn);
-    } else {
-        console.error("Button with id 'linkedInBtn' not found in the DOM.");
-    }
 });
-
-async function authenticateWithLinkedIn() {
-    const vercelFunctionUrl = 'https://skill-web3.vercel.app/api/linkedinAuth';
-    const state = crypto.randomUUID(); // Generate a random state string
-  
-    try {
-        const response = await fetch(`${vercelFunctionUrl}?state=${state}`);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch redirect URL: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        if (!data || !data.redirectUrl) {
-            throw new Error('Invalid response format from server');
-        }
-
-        // Redirect to LinkedIn authorization page
-        window.location.href = data.redirectUrl;
-    } catch (error) {
-        console.error('Error fetching redirect URL:', error);
-        alert('An error occurred while fetching the redirect URL.');
-    }
-}
 
 // Function to make payment using MetaMask
 async function makePayment() {

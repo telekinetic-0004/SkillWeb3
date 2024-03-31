@@ -71,7 +71,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
+
+    // Load the Auth0 script asynchronously
+    const script = document.createElement('script');
+    script.src = 'https://cdn.auth0.com/js/auth0/9.19/auth0.min.js';
+    script.async = true;
+    script.onload = function() {
+        // Execute the connectWallet function only after the Auth0 script is loaded
+        connectWallet();
+    };
+    document.head.appendChild(script);
 });
+
 
 
 // Function to make payment using MetaMask

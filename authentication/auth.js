@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     auth0Script.src = 'https://cdn.auth0.com/js/auth0/9.19/auth0.min.js';
     document.head.appendChild(auth0Script);
 
-    // Wait for the Auth0 library to load
-    auth0Script.onload = function() {
+    // Listen for the script load event
+    auth0Script.addEventListener('load', function() {
         // Initialize Auth0Client once the library is loaded
         auth0 = new Auth0Client({
             domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
@@ -37,5 +37,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 connection: 'google'
             });
         });
-    };
+    });
 });

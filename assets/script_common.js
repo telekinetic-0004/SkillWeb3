@@ -22,9 +22,38 @@ document.addEventListener('DOMContentLoaded', async function() {
             const connectWalletBtn = document.getElementById('connectWalletBtn');
             connectWalletBtn.textContent = `Connected: ${userAddress}`;
 
-            // Enable Google sign-in button upon successful connection
-        const googleSignInBtn = document.getElementById('googleSignInBtn');
-        googleSignInBtn.removeAttribute('disabled');
+            // Disable the button after successful connection
+            connectWalletBtn.disabled = true;
+
+            // Enable the "Sign in with Google" button
+            const googleSignInBtn = document.getElementById('googleSignInBtn');
+            googleSignInBtn.disabled = false;
+
+            // Fetch additional user details (name and email) and display them
+            const auth0 = new auth0.WebAuth({
+                domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
+                clientID: 'jTYAK1RXiJkjjQPDClv2ymDfrcvJrUYv',
+                responseType: 'token id_token',
+                scope: 'openid profile email',
+            });
+
+            auth0.parseHash(function(err, authResult) {
+                if (authResult && authResult.accessToken && authResult.idToken) {
+                    auth0.client.userInfo(authResult.accessToken, function(err, user) {
+                        if (user) {
+                            const userFullNameSpan = document.getElementById('userFullName');
+                            if (userFullNameSpan) {
+                                userFullNameSpan.textContent = user.name;
+                            }
+
+                            const userEmailSpan = document.getElementById('userEmailAddress');
+                            if (userEmailSpan) {
+                                userEmailSpan.textContent = user.email;
+                            }
+                        }
+                    });
+                }
+            });
         } catch (error) {
             console.error('Error connecting wallet:', error);
             if (error.code === 4001) {
@@ -43,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
 });
+
 
 // Function to make payment using MetaMask
 async function makePayment() {

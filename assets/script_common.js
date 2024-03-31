@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             const connectWalletBtn = document.getElementById('connectWalletBtn');
             connectWalletBtn.textContent = `Connected: ${userAddress}`;
 
-            // Disable the button after successful connection
-            connectWalletBtn.disabled = true;
+            // Enable Google sign-in button upon successful connection
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        googleSignInBtn.removeAttribute('disabled');
         } catch (error) {
             console.error('Error connecting wallet:', error);
             if (error.code === 4001) {

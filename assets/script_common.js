@@ -18,9 +18,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 userAddressSpan.textContent = userAddress;
             }
 
-            // Enable Google sign-in button upon successful connection
+            // Update the "Connect Wallet" button's text content to "Connected: ..."
             const connectWalletBtn = document.getElementById('connectWalletBtn');
-            connectWalletBtn.style.display = 'none'; // Hide the button after connecting
+            connectWalletBtn.textContent = `Connected: ${userAddress}`;
+
+            // Disable the button after successful connection
+            connectWalletBtn.disabled = true;
         } catch (error) {
             console.error('Error connecting wallet:', error);
             if (error.code === 4001) {
@@ -31,13 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // Execute connectWallet function automatically when the DOM is loaded
-    connectWallet();
-});
-
-
-// Add a click event listener to the connect wallet button
-document.addEventListener('DOMContentLoaded', function() {
+    // Add a click event listener to the connect wallet button
     const connectWalletBtn = document.getElementById('connectWalletBtn');
     if (connectWalletBtn) {
         connectWalletBtn.addEventListener('click', connectWallet);
@@ -45,8 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
 });
-
-
 
 // Function to make payment using MetaMask
 async function makePayment() {

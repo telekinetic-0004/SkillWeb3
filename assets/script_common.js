@@ -1,31 +1,31 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to enable LinkedIn button after successful MetaMask connection
-    async function connectWallet() {
-        try {
-            // Check if MetaMask is installed
-            if (typeof window.ethereum === 'undefined') {
-                throw new Error('MetaMask is not installed or not detected');
-            }
+// Function to enable Google sign-in button after successful MetaMask connection
+async function connectWallet() {
+    try {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === 'undefined') {
+            throw new Error('MetaMask is not installed or not detected');
+        }
 
-            // Request account access from MetaMask
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const userAddress = accounts[0];
-            console.log("The connected user is:", userAddress);
+        // Request account access from MetaMask
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const userAddress = accounts[0];
+        console.log("The connected user is:", userAddress);
 
-            // Enable Google sign-in button upon successful connection
-            const googleSignInBtn = document.getElementById('googleSignInBtn');
-            googleSignInBtn.removeAttribute('disabled');
-        } catch (error) {
-            console.error('Error connecting wallet:', error);
-            if (error.code === 4001) {
-                alert('Connect request rejected by user. Please approve the request to continue.');
-            } else {
-                alert('An error occurred while connecting to MetaMask: ' + error.message);
-            }
+        // Enable Google sign-in button upon successful connection
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        googleSignInBtn.removeAttribute('disabled');
+    } catch (error) {
+        console.error('Error connecting wallet:', error);
+        if (error.code === 4001) {
+            alert('Connect request rejected by user. Please approve the request to continue.');
+        } else {
+            alert('An error occurred while connecting to MetaMask: ' + error.message);
         }
     }
+}
 
-    // Add a click event listener to the connect wallet button
+// Add a click event listener to the connect wallet button
+document.addEventListener('DOMContentLoaded', function() {
     const connectWalletBtn = document.getElementById('connectWalletBtn');
     if (connectWalletBtn) {
         connectWalletBtn.addEventListener('click', connectWallet);
@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
 });
+
 
 
 // Function to make payment using MetaMask

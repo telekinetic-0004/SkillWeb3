@@ -1,11 +1,11 @@
-// Load Auth0 library synchronously
+// Load Auth0 library asynchronously
 var auth0Script = document.createElement('script');
 auth0Script.src = 'https://cdn.auth0.com/js/auth0/9.19/auth0.min.js';
-auth0Script.onload = initializeAuth0;
 document.head.appendChild(auth0Script);
 
-// Function to initialize Auth0
-function initializeAuth0() {
+// Wait for the Auth0 library to load
+auth0Script.onload = function() {
+    // Initialize Auth0Client once the library is loaded
     var auth0 = new Auth0Client({
         domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
         client_id: 'jTYAK1RXiJkjjQPDClv2ymDfrcvJrUYv',
@@ -24,13 +24,13 @@ function initializeAuth0() {
     }
 
     handleAuthentication();
-}
 
-var googleSignInBtn = document.getElementById('googleSignInBtn');
+    var googleSignInBtn = document.getElementById('googleSignInBtn');
 
-googleSignInBtn.addEventListener('click', function() {
-    // Trigger Auth0 authentication
-    auth0.loginWithRedirect({
-        connection: 'google'
+    googleSignInBtn.addEventListener('click', function() {
+        // Trigger Auth0 authentication
+        auth0.loginWithRedirect({
+            connection: 'google'
+        });
     });
-});
+};

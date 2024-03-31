@@ -2,37 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net 'nonce-<your-nonce-value>';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Individual Registration</title>
 </head>
 <body>
     <h1>Individual Registration</h1>
     <button id="connectWalletBtn">Connect Wallet</button>
-    <button id="linkedInBtn" disabled>Login with LinkedIn</button>
+    <button id="googleSignInBtn" disabled>Sign in with Google</button>
 
     <script src="../assets/script_common.js"></script>
-    <script nonce="<your-nonce-value>">
-        function createCSPDirective() {
-          const nonce = btoa(crypto.getRandomValues(new Uint32Array(16))).substring(0, 16);
+    <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
+    <script>
+      var auth0 = new auth0.WebAuth({
+          domain: process.env.AUTH0_DOMAIN,
+          clientID: process.env.AUTH0_CLIENT_ID,
+          redirectUri: process.env.FRONTEND_URL,
+          retry: process.env.RETRY_URL,
+          responseType: 'token id_token',
+          scope: 'openid profile email'
+      });
 
-          const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
-          if (cspMeta) {
-            let cspText = cspMeta.getAttribute('content');
-            cspText = cspText.replace(/nonce-\w+/, `nonce-${nonce}`);
-            cspMeta.setAttribute('content', cspText);
+      var googleSignInBtn = document.getElementById('googleSignInBtn');
 
-            // Set the nonce attribute of the inline script
-            const inlineScripts = document.querySelectorAll('script[nonce]');
-            inlineScripts.forEach(script => script.setAttribute('nonce', nonce));
+      googleSignInBtn.addEventListener('click', function() {
+          auth0.authorize({
+              connection: 'google'
+          });
+      });
 
-            // Set the nonce attribute of the createCSPDirective function
-            (this.constructor.name === 'HTMLScriptElement' ? this: createCSPDirective).setAttribute('nonce', nonce);
-          }
-        }
+      // Check if there are tokens in the URL hash indicating a successful authentication
+      var handleAuthentication = function() {
+          auth0.parseHash(function(err, authResult) {
+              if (authResult && authResult.accessToken && authResult.idToken) {
+                  // Save tokens to local storage or session storage if needed
+                  window.location.href = redirectUri;
+              } else if (err) {
+                  console.error('Authentication error:', err);
+                  window.location.href = retry;
+              }
+          });
+      };
 
-        // Call the function after the DOM is ready
-        document.addEventListener('DOMContentLoaded', createCSPDirective);
-    </script>
+      // Call the function to handle authentication when the page loads
+      handleAuthentication();
+  </script>
 </body>
 </html>

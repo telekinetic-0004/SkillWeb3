@@ -1,62 +1,50 @@
-export default async function handler(req, res) {
-    const { code, state } = req.query;
-
-    try {
-        if (code) {
-            const accessTokenResponse = await fetch(
-                `https://www.linkedin.com/oauth/v2/accessToken`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        grant_type: 'authorization_code',
-                        code,
-                        redirect_uri: process.env.LINKEDIN_REDIRECT_URI,
-                        client_id: process.env.LINKEDIN_CLIENT_ID,
-                        client_secret: process.env.LINKEDIN_CLIENT_SECRET,
-                    }),
-                }
-            );
-            const accessTokenData = await accessTokenResponse.json();
-
-            const userResponse = await fetch('https://api.linkedin.com/v2/me', {
-                headers: {
-                    Authorization: `Bearer ${accessTokenData.access_token}`,
-                },
-            });
-            const userData = await userResponse.json();
-
-            const stored = await storeUserDataOnBlockchain(userData.firstName, userData.email);
-
-            if (stored) {
-                res.redirect(process.env.FRONTEND_URL);
-            } else {
-                throw new Error('Failed to store user data');
-            }
-        } else {
-            const scope = 'r_liteprofile r_emailaddress w_member_social';
-            const redirectUri = process.env.LINKEDIN_REDIRECT_URI;
-            const clientId = process.env.LINKEDIN_CLIENT_ID;
-
-            const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
-
-            res.status(200).json({ redirectUrl: url });
-        }
-    } catch (error) {
-        console.error('Error in LinkedIn authentication:', error);
-        res.status(500).json({ error: 'Failed to handle LinkedIn authentication' });
-    }
-}
-
-async function storeUserDataOnBlockchain(firstName, email) {
-    try {
-        // Your blockchain storage logic here
-        console.log('Stored user data:', { firstName, email });
-        return true;
-    } catch (error) {
-        console.error('Error storing data on blockchain:', error);
-        return false;
-    }
-}
+const auth0 = new auth0.WebAuth({
+    domain: 'YOUR_AUTH0_DOMAIN', // Replace with your Auth0 domain
+    clientID: 'YOUR_AUTH0_CLIENT_ID', // Replace with your Auth0 client ID
+    redirectUri: 'https://skill_web3.vercel.app/callback' // Update with your Vercel deployment URL
+  });
+  
+  function loginWithGoogle() {
+    auth0.authorize({
+      connection: 'google-oauth2',
+      scope: 'openid profile email'
+    });
+  }
+  
+  window.addEventListener('hashchange', handleRedirect); // Handle redirect after login
+  
+  function handleRedirect() {
+    const code = window.location.hash.substr(1);
+    auth0.parseHash(code, (err, authResult) => {
+      if (authResult && authResult.accessToken && authResult.idToken) {
+        getUserInfo(authResult);
+      } else {
+        console.log(err);
+      }
+    });
+  }
+  
+  function getUserInfo(authResult) {
+    const accessToken = authResult.accessToken;
+    fetch('https://YOUR_AUTH0_DOMAIN/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(response => response.json())
+    .then(userInfo => {
+      const userDisplay = `
+        <p>Name: ${userInfo.name}</p>
+        <p>Email: ${userInfo.email}</p>
+      `;
+      document.getElementById('user-info').innerHTML = userDisplay;
+    })
+    .catch(error => console.error(error));
+  }
+  
+  function signOut() {
+    auth0.logout({
+      returnTo: 'https://skill_web3.vercel.app' // Redirect back to your app after sign-out
+    });
+  }
+  

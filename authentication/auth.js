@@ -9,6 +9,8 @@
 
     // Handle the Auth0 library script load event
     auth0Script.onload = function () {
+        console.log("Auth0 library loaded successfully");
+
         // Initialize Auth0WebAuth once the library is loaded
         auth0WebAuth = new auth0.WebAuth({
             domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
@@ -21,6 +23,7 @@
 
         // Handle authentication
         function handleAuthentication() {
+            console.log("Starting authentication handle");
             auth0WebAuth.parseHash(window.location.hash, function (err, result) {
                 if (err) {
                     console.error("Error during authentication:", err);
@@ -28,6 +31,7 @@
                 }
 
                 if (result && result.idToken) {
+                    console.log("Authentication successful");
                     // Store the access token and id token in local storage
                     localStorage.setItem('access_token', result.accessToken);
                     localStorage.setItem('id_token', result.idToken);
@@ -42,7 +46,10 @@
 
         // Add event listener to the Google Sign In button
         var googleSignInBtn = document.getElementById('googleSignInBtn');
-        googleSignInBtn.addEventListener('click', function () {
+        googleSignInBtn.addEventListener('click', function (event) {
+            console.log("Google Sign-In button clicked");
+            event.preventDefault(); // Prevent the default form submission behavior
+
             // Trigger Auth0 authentication
             auth0WebAuth.authorize({
                 connection: 'google',

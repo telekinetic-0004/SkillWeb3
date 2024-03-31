@@ -1,59 +1,26 @@
-(function () {
-    // Define a variable to hold the Auth0WebAuth object
-    let auth0WebAuth;
+var auth0 = new Auth0Client({
+    domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
+    client_id: 'jTYAK1RXiJkjjQPDClv2ymDfrcvJrUYv',
+    redirect_uri: 'https://skill-web3.vercel.app/home.html',
+    audience: 'https://dev-1lhu6wr3urnf83ul.us.auth0.com/api/v2/',
+    scope: 'openid profile email'
+});
 
-    // Create a new script tag for the Auth0 library
-    const auth0Script = document.createElement('script');
-    auth0Script.src = 'https://cdn.auth0.com/js/auth0/9.19/auth0.min.js';
-    document.head.appendChild(auth0Script);
+var googleSignInBtn = document.getElementById('googleSignInBtn');
 
-    // Handle the Auth0 library script load event
-    auth0Script.onload = function () {
-        // Initialize Auth0WebAuth once the library is loaded
-        auth0WebAuth = new auth0.WebAuth({
-            domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
-            clientID: 'jTYAK1RXiJkjjQPDClv2ymDfrcvJrUYv',
-            redirectUri: 'https://skill-web3.vercel.app/home.html',
-            audience: 'https://dev-1lhu6wr3urnf83ul.us.auth0.com/api/v2/',
-            responseType: 'token id_token',
-            scope: 'openid profile email'
-        });
+googleSignInBtn.addEventListener('click', function() {
+    auth0.loginWithRedirect({
+        connection: 'google'
+    });
+});
 
-        // Handle authentication
-        function handleAuthentication() {
-            auth0WebAuth.parseHash(window.location.hash, function (err, result) {
-                if (err) {
-                    console.error("Error during authentication:", err);
-                    return;
-                }
+// Handle authentication
+async function handleAuthentication() {
+    const isAuthenticated = await auth0.isAuthenticated();
+    if (isAuthenticated) {
+        // Redirect to home page or perform necessary actions
+        window.location.href = 'https://skill-web3.vercel.app/home.html';
+    }
+}
 
-                if (result && result.idToken) {
-                    // Store the access token and id token in local storage
-                    localStorage.setItem('access_token', result.accessToken);
-                    localStorage.setItem('id_token', result.idToken);
-
-                    // Redirect to home page or perform necessary actions
-                    window.location.href = 'https://skill-web3.vercel.app/home.html';
-                }
-            });
-        }
-
-        handleAuthentication();
-
-        // Add event listener to the Google Sign In button
-        var googleSignInBtn = document.getElementById('googleSignInBtn');
-        googleSignInBtn.addEventListener('click', function () {
-            // Trigger Auth0 authentication
-            auth0WebAuth.authorize({
-                connection: 'google',
-                responseType: 'token id_token',
-                scope: 'openid profile email'
-            });
-        });
-    };
-
-    // Handle error if the Auth0 library fails to load
-    auth0Script.onerror = function (error) {
-        console.error("Error loading the Auth0 library:", error);
-    };
-})();
+handleAuthentication();

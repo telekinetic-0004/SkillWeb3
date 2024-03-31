@@ -12,10 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const userAddress = accounts[0];
             console.log("The connected user is:", userAddress);
 
-            // Enable LinkedIn button upon successful connection
-            // Remove any existing 'disabled' attribute
-            const connectWalletBtn = document.getElementById('connectWalletBtn');
-            connectWalletBtn.removeAttribute('disabled');
+            // Enable Google sign-in button upon successful connection
+            const googleSignInBtn = document.getElementById('googleSignInBtn');
+            googleSignInBtn.removeAttribute('disabled');
         } catch (error) {
             console.error('Error connecting wallet:', error);
             if (error.code === 4001) {
@@ -34,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Button with id 'connectWalletBtn' not found in the DOM.");
     }
 });
+
 
 // Function to make payment using MetaMask
 async function makePayment() {

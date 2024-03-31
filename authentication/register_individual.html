@@ -12,39 +12,46 @@
 
     <script src="../assets/script_common.js"></script>
     <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
+    <script src="config.json"></script> <!-- Load config.json -->
     <script>
-      var auth0 = new auth0.WebAuth({
-          domain: process.env.AUTH0_DOMAIN,
-          clientID: process.env.AUTH0_CLIENT_ID,
-          redirectUri: process.env.FRONTEND_URL,
-          retry: process.env.RETRY_URL,
-          responseType: 'token id_token',
-          scope: 'openid profile email'
-      });
-
-      var googleSignInBtn = document.getElementById('googleSignInBtn');
-
-      googleSignInBtn.addEventListener('click', function() {
-          auth0.authorize({
-              connection: 'google'
+      // Load configuration from config.json
+      fetch('config.json')
+        .then(response => response.json())
+        .then(config => {
+          var auth0 = new auth0.WebAuth({
+              domain: config.AUTH0_DOMAIN,
+              clientID: config.AUTH0_CLIENT_ID,
+              redirectUri: config.FRONTEND_URL,
+              retry: config.RETRY_URL,
+              responseType: 'token id_token',
+              scope: 'openid profile email'
           });
-      });
 
-      // Check if there are tokens in the URL hash indicating a successful authentication
-      var handleAuthentication = function() {
-          auth0.parseHash(function(err, authResult) {
-              if (authResult && authResult.accessToken && authResult.idToken) {
-                  // Save tokens to local storage or session storage if needed
-                  window.location.href = redirectUri;
-              } else if (err) {
-                  console.error('Authentication error:', err);
-                  window.location.href = retry;
-              }
+          var googleSignInBtn = document.getElementById('googleSignInBtn');
+
+          googleSignInBtn.addEventListener('click', function() {
+              auth0.authorize({
+                  connection: 'google'
+              });
           });
-      };
 
-      // Call the function to handle authentication when the page loads
-      handleAuthentication();
+          // Check if there are tokens in the URL hash indicating a successful authentication
+          var handleAuthentication = function() {
+              auth0.parseHash(function(err, authResult) {
+                  if (authResult && authResult.accessToken && authResult.idToken) {
+                      // Save tokens to local storage or session storage if needed
+                      window.location.href = config.FRONTEND_URL;
+                  } else if (err) {
+                      console.error('Authentication error:', err);
+                      window.location.href = config.RETRY_URL;
+                  }
+              });
+          };
+
+          // Call the function to handle authentication when the page loads
+          handleAuthentication();
+        })
+        .catch(error => console.error('Error loading config.json:', error));
   </script>
 </body>
 </html>

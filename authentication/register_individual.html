@@ -21,10 +21,10 @@
   
     <script>
       var auth0 = new auth0.WebAuth({
-          domain: AUTH0_DOMAIN,
-          clientID: AUTH0_CLIENT_ID,
-          redirectUri: FRONTEND_URL,
-          retry: RETRY_URL,
+          domain: env.AUTH0_DOMAIN,
+          clientID: env.AUTH0_CLIENT_ID,
+          redirectUri: env.FRONTEND_URL,
+          retry: env.RETRY_URL,
           responseType: 'token id_token',
           scope: 'openid profile email'
       });
@@ -42,10 +42,10 @@
           auth0.parseHash(function(err, authResult) {
               if (authResult && authResult.accessToken && authResult.idToken) {
                   // Save tokens to local storage or session storage if needed
-                  window.location.href = FRONTEND_URL;
+                  window.location.href = env.FRONTEND_URL;
               } else if (err) {
                   console.error('Authentication error:', err);
-                  window.location.href = RETRY_URL;
+                  window.location.href = env.RETRY_URL;
               }
           });
       };

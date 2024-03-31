@@ -1,3 +1,6 @@
+// Define a global variable to hold the Auth0Client object
+var auth0;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Load Auth0 library asynchronously
     var auth0Script = document.createElement('script');
@@ -7,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait for the Auth0 library to load
     auth0Script.onload = function() {
         // Initialize Auth0Client once the library is loaded
-        var auth0 = new Auth0Client({
+        auth0 = new Auth0Client({
             domain: 'dev-1lhu6wr3urnf83ul.us.auth0.com',
             client_id: 'jTYAK1RXiJkjjQPDClv2ymDfrcvJrUYv',
             redirect_uri: 'https://skill-web3.vercel.app/home.html',
@@ -17,18 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Handle authentication
         async function handleAuthentication() {
-            const isAuthenticated = await new Promise((resolve, reject) => {
-                auth0.checkSession({}, (err, result) => {
-                    if (err) {
-                        // Session not active
-                        resolve(false);
-                    } else {
-                        // Session active
-                        resolve(true);
-                    }
-                });
-            });
-
+            const isAuthenticated = await auth0.isAuthenticated();
             if (isAuthenticated) {
                 // Redirect to home page or perform necessary actions
                 window.location.href = 'https://skill-web3.vercel.app/home.html';

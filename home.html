@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://skill-web3.vercel.app; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Researcher Collaboration Platform</title>
     <link rel="stylesheet" href="assets/styles.css">
@@ -18,29 +17,6 @@
         </ul>
     </div>
     <script src="assets/script_common.js"></script>
-    <script>
-        // Function to parse URL parameters
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        // Get access token and state from URL parameters
-        const accessToken = getParameterByName('access_token');
-        const state = getParameterByName('state');
-
-        // Perform actions based on access token and state
-        if (accessToken && state) {
-            // Handle the authentication success
-            console.log('Access Token:', accessToken);
-            console.log('State:', state);
-            // Perform any additional actions here, such as storing the access token or redirecting the user
-        }
-    </script>
+    
 </body>
 </html>
